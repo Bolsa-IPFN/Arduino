@@ -256,9 +256,11 @@ void loop() {
     // j = 0;
     // while(Wait_1_sec == 0)
     // {
+    if (Serial.available() > 0) {
       deserializeJson(doc_rec, Serial);
       Brian(doc_rec);
-      delay(1000);
+    }
+    delay(500);
     //   if (j==10)
     //   {
     //     Wait_1_sec =1;
