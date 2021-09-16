@@ -146,12 +146,12 @@ void Brian(JsonDocument& doc_rec)
       if (val_1_stat == 1)
       {
         digitalWrite(8, HIGH);
-        Serial.println("On");
+        // Serial.println("On");
       }
       else
       {
         digitalWrite(8, LOW);
-        Serial.println("Off");
+        // Serial.println("Off");
       }
   }
   if(doc_rec.containsKey("val_2"))
@@ -160,12 +160,12 @@ void Brian(JsonDocument& doc_rec)
       if (val_2_stat == 1)
       {
         digitalWrite(9, HIGH);
-        Serial.println("On");
+        // Serial.println("On");
       }
       else
       {
         digitalWrite(9, LOW);
-        Serial.println("Off");
+        // Serial.println("Off");
       }
   }
   if (doc_rec.containsKey("val_3"))
@@ -174,12 +174,12 @@ void Brian(JsonDocument& doc_rec)
       if (val_3_stat == 1)
       {
         digitalWrite(10, HIGH);
-        Serial.println("On");
+        // Serial.println("On");
       }
       else
       {
         digitalWrite(10, LOW);
-        Serial.println("Off");
+        // Serial.println("Off");
       }
   }
   if (doc_rec.containsKey("val_4") )
@@ -188,12 +188,12 @@ void Brian(JsonDocument& doc_rec)
       if (val_4_stat == 1)
       {
         digitalWrite(11, HIGH);
-        Serial.println("On");
+        //Serial.println("On");
       }
       else
       {
         digitalWrite(11, LOW);
-        Serial.println("Off");
+        //Serial.println("Off");
       }
   }
   if (doc_rec.containsKey("val_5"))
@@ -202,12 +202,12 @@ void Brian(JsonDocument& doc_rec)
       if (val_5_stat == 1)
       {
         digitalWrite(12, HIGH);
-        Serial.println("On");
+        // Serial.println("On");
       }
       else
       {
         digitalWrite(12, LOW);
-        Serial.println("Off");
+        // Serial.println("Off");
       }
   }
   else
