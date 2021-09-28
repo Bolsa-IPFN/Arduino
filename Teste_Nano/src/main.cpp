@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include "High_Temp.h"
 
 int N = 100; 
 
@@ -10,18 +9,7 @@ int pin3 = A2;
 int pin4 = A3;
 int pin5 = A4;
 int pin6 = A5;
-int termopar_pin1 = 0;
-int termopar_pin2 = 0;
-int termopar_pin3 = 0;
-int termopar_pin4 = 0;
-int termopar_pin5 = 0;
-int termopar_pin6 = 0;
-int pin_amb=0;
-HighTemp ht2(pin2,A0);
-HighTemp ht3(pin3,A0);
-HighTemp ht4(pin4,A0);
-HighTemp ht5(pin5,A0);
-HighTemp ht6(pin6,A0);
+
 int incomingByte = 0; // for incoming serial data
 
 
@@ -42,8 +30,6 @@ int val_4_stat =0;
 int val_5_stat =0;
 int Wait_1_sec=0;
 String str;
-unsigned long previousMillis = 0;
-unsigned long OnTime = 5000;
 
 
 
@@ -59,45 +45,6 @@ float average1(int pin){
   
 }
 
-
-float what_to_do(int pin, int type_of_sensor)
-{
-  if (type_of_sensor==0)
-  {
-    return average1(pin);
-  }
-  else
-  {
-    if (type_of_sensor == 2)
-    {
-      return ht2.getRoomTmp();
-    }
-    else
-    {
-      if (pin ==A1)
-      {
-        return ht2.getThmc();
-      }
-      else if (pin ==A2)
-      {
-        return ht3.getThmc();
-      }
-      else if (pin ==A3)
-      {
-        return ht4.getThmc();
-      }
-      else if (pin ==A4)
-      {
-        return ht5.getThmc();
-      }
-      else if (pin ==A5)
-      {
-        return ht6.getThmc();
-      }
-    }
-    
-  }
-}
 
 void do_staf(int n_samples, int inf ) {
   
@@ -287,103 +234,9 @@ void Brian(JsonDocument& doc_rec)
         // Serial.println("Off");
       }
   }
-  if (doc_rec.containsKey("sensor_type"))
-  {
-    
-    if (doc_rec["sensor_type"].containsKey("A0"))
-    {
-      const char* sensor  = doc_rec["sensor_type"]["A0"];
-      // Serial.print(sensor);
-      if (strcmp (sensor,"lm35")==0)
-      {
-        termopar_pin1 = 0;
-      }
-      if (strcmp (sensor,"termopar_ht")==0)
-      {
-        termopar_pin1 = 1;
-      }
-      if (strcmp (sensor,"termopar_amb")==0)
-      {
-        termopar_pin1 = 2;
-      }
-      Serial.println(termopar_pin1);
-    }
-    if (doc_rec["sensor_type"].containsKey("A1"))
-    {
-      const char* sensor  = doc_rec["sensor_type"]["A1"];
-      // Serial.print(sensor);
-      if (strcmp (sensor,"lm35")==0)
-      {
-        termopar_pin2 = 0;
-      }
-      if (strcmp (sensor,"termopar_ht")==0)
-      {
-        termopar_pin2 = 1;
-        ht2.begin();
-      }
-      Serial.println(termopar_pin2);
-    }
-    if (doc_rec["sensor_type"].containsKey("A2"))
-    {
-      const char* sensor  = doc_rec["sensor_type"]["A2"];
-      // Serial.print(sensor);
-      if (strcmp (sensor,"lm35")==0)
-      {
-        termopar_pin3 = 0;
-      }
-      if (strcmp (sensor,"termopar_ht")==0)
-      {
-        termopar_pin3 = 1;
-      }
-      Serial.println(termopar_pin3);
-    }
-    if (doc_rec["sensor_type"].containsKey("A3"))
-    {
-      const char* sensor  = doc_rec["sensor_type"]["A3"];
-      // Serial.print(sensor);
-      if (strcmp (sensor,"lm35")==0)
-      {
-        termopar_pin4 = 0;
-      }
-      if (strcmp (sensor,"termopar_ht")==0)
-      {
-        termopar_pin4 = 1;
-      }
-      Serial.println(termopar_pin4);
-    }
-    if (doc_rec["sensor_type"].containsKey("A4"))
-    {
-      const char* sensor  = doc_rec["sensor_type"]["A4"];
-      // Serial.print(sensor);
-      if (strcmp (sensor,"lm35")==0)
-      {
-        termopar_pin5 = 0;
-      }
-      if (strcmp (sensor,"termopar_ht")==0)
-      {
-        termopar_pin5 = 1;
-      }
-      Serial.println(termopar_pin5);
-    }
-    if (doc_rec["sensor_type"].containsKey("A5"))
-    {
-      const char* sensor  = doc_rec["sensor_type"]["A5"];
-      // Serial.print(sensor);
-      if (strcmp (sensor,"lm35")==0)
-      {
-        termopar_pin6 = 0;
-      }
-      if (strcmp (sensor,"termopar_ht")==0)
-      {
-        termopar_pin6 = 1;
-      }
-      Serial.println(termopar_pin6);
-    }
-    
-  }
   else
   {
-    // Serial.println("\nErro no Json!!\n");
+
   }
   
 
@@ -410,35 +263,20 @@ void setup() {
 void loop() {
   // send data only when you receive data:
   //read_JSON();
-  unsigned long currentMillis = millis();
-  StaticJsonDocument<500> doc_rec;
-  if (currentMillis - previousMillis >= OnTime)
-  {
-    StaticJsonDocument<500> doc_send;
-    previousMillis = currentMillis;  // Remember the time
-      // StaticJsonDocument<200> doc_1;
-      doc_send["sample"] = i;
-      doc_send["temp_top"] =  average1(pin1);
-      doc_send["temp_bot"] =  average1(pin2);
-      doc_send["temp_in"] =  average1(pin3);
-      doc_send["temp_north"] =  average1(pin4);
-      doc_send["temp_south"] =  average1(pin5);
-      doc_send["temp"] =  average1(pin6);
-      // if( termopar == 1)
-      // {
-      //   HighTemp ht(A2,A0);
-      //   doc_send["temp_top"] = ht.getRoomTmp();
-      //   doc_send["temp_bot"] = average1(pin2);
-      //   doc_send["temp_in"] = ht.getThmc();
-      //   doc_send["temp_north"] = average1(pin4);
-      //   doc_send["temp_south"] = average1(pin5);
-      //   doc_send["temp"] = average1(pin6);
-      // }
-      i=i+1;
-      serializeJson(doc_send, Serial);
-      Serial.println("");
-  }
-      // if (Serial.available() > 0) {
+   StaticJsonDocument<500> doc_send;
+   StaticJsonDocument<500> doc_rec;
+    // StaticJsonDocument<200> doc_1;
+    doc_send["sample"] = i;
+    doc_send["temp_top"] = average1(pin1);
+    doc_send["temp_bot"] = average1(pin2);
+    doc_send["temp_in"] = average1(pin3);
+    doc_send["temp_north"] = average1(pin4);
+    doc_send["temp_south"] = average1(pin5);
+    doc_send["temp"] = average1(pin6);
+    
+    serializeJson(doc_send, Serial);
+    Serial.println("");
+    // if (Serial.available() > 0) {
     // // read the incoming byte:
     //   incomingByte = Serial.read();
 
@@ -452,7 +290,7 @@ void loop() {
       deserializeJson(doc_rec, Serial);
       Brian(doc_rec);
     }
-    // delay(4500);
+    delay(500);
     //   if (j==10)
     //   {
     //     Wait_1_sec =1;
@@ -460,9 +298,8 @@ void loop() {
     //   }
     //   j = j + 1;
     // }
-    
+    i = i + 1;
     // Wait_1_sec = 0;
 }
 //{"val_1":0,"val_3":1,"val_5":1}
 //{"val_4":1}
-// {"val_1":1,"val_2":1,"val_3":1,"val_4":1,"val_5":1}
